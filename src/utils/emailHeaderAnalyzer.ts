@@ -46,6 +46,13 @@ export function analyzeEmailHeader(headerText: string) {
         result.authenticationResults.dmarc = dmarcMatch[1];
       }
     }
+    if (line.startsWith('DKIM-Signature:')) {
+      result.authenticationResults.dkim = 'present';
+    }
+    if (line.startsWith('Received-SPF:')) {
+      const spfParts = line.split(' ');
+      result.authenticationResults.spf = spfParts[1];
+    }
     if (line.startsWith('Message-ID:') && !result.senderMessageId) result.senderMessageId = line.substring(11).trim();
     if (line.startsWith('Return-Path:')) result.returnPath = line.substring(12).trim();
     if (line.startsWith('X-Envelope-From:')) result.envelopeFrom = line.substring(16).trim();
