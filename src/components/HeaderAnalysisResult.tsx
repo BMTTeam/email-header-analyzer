@@ -16,6 +16,10 @@ interface HeaderAnalysisResultProps {
     receivedChain: string[];
     spamScore?: string;
     authenticationResults?: string;
+    senderMessageId?: string;
+    recipientMessageId?: string;
+    returnPath?: string;
+    envelopeFrom?: string;
   };
 }
 
@@ -44,6 +48,30 @@ const HeaderAnalysisResult: React.FC<HeaderAnalysisResultProps> = ({ result }) =
             <dt className="font-semibold">Date:</dt>
             <dd>{result.date}</dd>
           </div>
+          {result.senderMessageId && (
+            <div>
+              <dt className="font-semibold">Sender Message-ID:</dt>
+              <dd>{result.senderMessageId}</dd>
+            </div>
+          )}
+          {result.recipientMessageId && (
+            <div>
+              <dt className="font-semibold">Recipient Message-ID:</dt>
+              <dd>{result.recipientMessageId}</dd>
+            </div>
+          )}
+          {result.returnPath && (
+            <div>
+              <dt className="font-semibold">Return-Path:</dt>
+              <dd>{result.returnPath}</dd>
+            </div>
+          )}
+          {result.envelopeFrom && (
+            <div>
+              <dt className="font-semibold">Envelope-From:</dt>
+              <dd>{result.envelopeFrom}</dd>
+            </div>
+          )}
           <div>
             <dt className="font-semibold">Email Journey:</dt>
             <dd>
