@@ -11,6 +11,7 @@ export function analyzeEmailHeader(headerText: string) {
       server: '',
       dkim: '',
       spf: '',
+      dmarc: '',
     },
     senderMessageId: '',
     recipientMessageId: '',
@@ -30,11 +31,19 @@ export function analyzeEmailHeader(headerText: string) {
       result.authenticationResults.server = authParts[1].trim();
       const authDetails = authParts.slice(2).join(':').trim();
       
-      if (authDetails.includes('dkim=')) {
-        result.authenticationResults.dkim = authDetails.match(/dkim=([^;]+)/)[1].trim();
+      const dkimMatch = authDetails.match(/dkim=([^;\s]+)/);
+      if (dkimMatch) {
+        result.authenticationResults.dkim = dkimMatch[1];
       }
-      if (authDetails.includes('spf=')) {
-        result.authenticationResults.spf = authDetails.match(/spf=([^;]+)/)[1].trim();
+      
+      const spfMatch = authDetails.match(/spf=([^;\s]+)/);
+      if (spfMatch) {
+        result.authenticationResults.spf = spfMatch[1];
+      }
+      
+      const dmarcMatch = authDetails.match(/dmarc=([^;\s]+)/);
+      if (dmarcMatch) {
+        result.authenticationResults.dmarc = dmarcMatch[1];
       }
     }
     if (line.startsWith('Message-ID:') && !result.senderMessageId) result.senderMessageId = line.substring(11).trim();

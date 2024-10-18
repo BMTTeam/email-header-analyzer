@@ -19,6 +19,7 @@ interface HeaderAnalysisResultProps {
       server: string;
       dkim: string;
       spf: string;
+      dmarc: string;
     };
     senderMessageId?: string;
     recipientMessageId?: string;
@@ -102,6 +103,9 @@ const HeaderAnalysisResult: React.FC<HeaderAnalysisResultProps> = ({ result }) =
                 )}
                 {result.authenticationResults.spf && (
                   <p>SPF: {result.authenticationResults.spf}</p>
+                )}
+                {result.authenticationResults.dmarc && (
+                  <p>DMARC: {result.authenticationResults.dmarc}</p>
                 )}
               </dd>
             </div>
