@@ -15,7 +15,11 @@ interface HeaderAnalysisResultProps {
     date: string;
     receivedChain: string[];
     spamScore?: string;
-    authenticationResults?: string;
+    authenticationResults?: {
+      server: string;
+      dkim: string;
+      spf: string;
+    };
     senderMessageId?: string;
     recipientMessageId?: string;
     returnPath?: string;
@@ -91,7 +95,15 @@ const HeaderAnalysisResult: React.FC<HeaderAnalysisResultProps> = ({ result }) =
           {result.authenticationResults && (
             <div>
               <dt className="font-semibold">Authentication Results:</dt>
-              <dd>{result.authenticationResults}</dd>
+              <dd>
+                <p>Server: {result.authenticationResults.server}</p>
+                {result.authenticationResults.dkim && (
+                  <p>DKIM: {result.authenticationResults.dkim}</p>
+                )}
+                {result.authenticationResults.spf && (
+                  <p>SPF: {result.authenticationResults.spf}</p>
+                )}
+              </dd>
             </div>
           )}
         </dl>

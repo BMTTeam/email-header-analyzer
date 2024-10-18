@@ -7,7 +7,11 @@ export function analyzeEmailHeader(headerText: string) {
     date: '',
     receivedChain: [],
     spamScore: '',
-    authenticationResults: '',
+    authenticationResults: {
+      server: '',
+      dkim: '',
+      spf: '',
+    },
     senderMessageId: '',
     recipientMessageId: '',
     returnPath: '',
@@ -21,7 +25,18 @@ export function analyzeEmailHeader(headerText: string) {
     if (line.startsWith('Date:')) result.date = line.substring(5).trim();
     if (line.startsWith('Received:')) result.receivedChain.push(line.substring(9).trim());
     if (line.includes('X-Spam-Score:')) result.spamScore = line.split(':')[1].trim();
-    if (line.startsWith('Authentication-Results:')) result.authenticationResults = line.substring(24).trim();
+    if (line.startsWith('Authentication-Results:')) {
+      const authParts = line.split(':');
+      result.authenticationResults.server = authParts[1].trim();
+      const authDetails = authParts.slice(2).join(':').trim();
+      
+      if (authDetails.includes('dkim=')) {
+        result.authenticationResults.dkim = authDetails.match(/dkim=([^;]+)/)[1].trim();
+      }
+      if (authDetails.includes('spf=')) {
+        result.authenticationResults.spf = authDetails.match(/spf=([^;]+)/)[1].trim();
+      }
+    }
     if (line.startsWith('Message-ID:') && !result.senderMessageId) result.senderMessageId = line.substring(11).trim();
     if (line.startsWith('Return-Path:')) result.returnPath = line.substring(12).trim();
     if (line.startsWith('X-Envelope-From:')) result.envelopeFrom = line.substring(16).trim();
